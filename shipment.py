@@ -1,6 +1,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 from trytond.pool import Pool, PoolMeta
+from trytond.transaction import Transaction
 
 __all__ = ['ShipmentIn']
 __metaclass__ = PoolMeta
@@ -44,5 +45,7 @@ class ShipmentIn:
                             'date': today,
                             }
                         vlist.append(values)
-        ProductReview.create(vlist)
+        if vlist:
+            with Transaction().set_user(0, set_context=True):
+                ProductReview.create(vlist)
         super(ShipmentIn, cls).receive(shipments)
